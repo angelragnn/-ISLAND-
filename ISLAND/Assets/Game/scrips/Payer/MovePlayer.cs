@@ -36,10 +36,14 @@ public class MovePlayer : MonoBehaviour
 
     void Update()
     {
-        HandleMovement();
         RotatePlayer();
         RotateCamera();
         UpdateAnimations();
+    }
+
+    void FixedUpdate()
+    {
+        HandleMovement();
     }
 
     void HandleMovement()
@@ -49,11 +53,13 @@ public class MovePlayer : MonoBehaviour
 
         float currentSpeed = isRunning ? runSpeed : walkSpeed;
 
-        Vector3 move = new Vector3(x, 0, y);
+        Vector3 direction = (transform.right * x + transform.forward * y).normalized;
+        Vector3 velocity = direction * currentSpeed;
 
-        transform.Translate(
-            move * currentSpeed * Time.deltaTime,
-            Space.Self
+        rb.linearVelocity = new Vector3(
+            velocity.x,
+            rb.linearVelocity.y,
+            velocity.z
         );
     }
 
@@ -71,15 +77,9 @@ public class MovePlayer : MonoBehaviour
         if (cameraTransform == null) return;
 
         _cameraPitch -= _lookInput.y * mouseSensitivity;
+        _cameraPitch = Mathf.Clamp(_cameraPitch, minPitch, maxPitch);
 
-        _cameraPitch = Mathf.Clamp(
-            _cameraPitch,
-            minPitch,
-            maxPitch
-        );
-
-        cameraTransform.localRotation =
-            Quaternion.Euler(_cameraPitch, 0f, 0f);
+        cameraTransform.localRotation = Quaternion.Euler(_cameraPitch, 0f, 0f);
     }
 
     void UpdateAnimations()
@@ -94,20 +94,10 @@ public class MovePlayer : MonoBehaviour
         animator.SetFloat("VelX", x);
         animator.SetFloat("VelY", y);
 
-        animator.SetFloat(
-            "Blend",
-            movementInput.magnitude
-        );
+        animator.SetFloat("Blend", movementInput.magnitude);
 
-        animator.SetBool(
-            "IsJumping",
-            !isGrounded
-        );
-
-        animator.SetBool(
-            "IsRunning",
-            isRunning
-        );
+        animator.SetBool("IsJumping", !isGrounded);
+        animator.SetBool("IsRunning", isRunning);
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -122,15 +112,8 @@ public class MovePlayer : MonoBehaviour
 
     public void OnRun(InputAction.CallbackContext context)
     {
-        if (context.performed)
-        {
-            isRunning = true;
-        }
-
-        if (context.canceled)
-        {
-            isRunning = false;
-        }
+        if (context.performed) isRunning = true;
+        if (context.canceled) isRunning = false;
     }
 
     public void OnJump(InputAction.CallbackContext context)
@@ -143,37 +126,22 @@ public class MovePlayer : MonoBehaviour
                 rb.linearVelocity.z
             );
 
-            rb.AddForce(
-                Vector3.up * jumpForce,
-                ForceMode.Impulse
-            );
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
 
             isGrounded = false;
-
-            animator.SetBool(
-                "IsJumping",
-                true
-            );
+            animator.SetBool("IsJumping", true);
         }
     }
 
     private void OnCollisionStay(Collision collision)
     {
         isGrounded = true;
-
-        animator.SetBool(
-            "IsJumping",
-            false
-        );
+        animator.SetBool("IsJumping", false);
     }
 
     private void OnCollisionExit(Collision collision)
     {
         isGrounded = false;
-
-        animator.SetBool(
-            "IsJumping",
-            true
-        );
+        animator.SetBool("IsJumping", true);
     }
 }
