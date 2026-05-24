@@ -326,7 +326,14 @@ PrefabInstance:
       value: uploads_files_5697812_Dungeon+FBX (1)
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_RemovedGameObjects: []
+    m_RemovedGameObjects:
+    - {fileID: -4630508424699801528, guid: 29e36a6fd6229744ba508135ce127c76, type: 3}
+    - {fileID: 7874376516407690073, guid: 29e36a6fd6229744ba508135ce127c76, type: 3}
+    - {fileID: 9027664195422483323, guid: 29e36a6fd6229744ba508135ce127c76, type: 3}
+    - {fileID: 1901141871379423564, guid: 29e36a6fd6229744ba508135ce127c76, type: 3}
+    - {fileID: -4760816106931193611, guid: 29e36a6fd6229744ba508135ce127c76, type: 3}
+    - {fileID: 5054284439902478628, guid: 29e36a6fd6229744ba508135ce127c76, type: 3}
+    - {fileID: -4196952040310456772, guid: 29e36a6fd6229744ba508135ce127c76, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 29e36a6fd6229744ba508135ce127c76, type: 3}
