@@ -7,8 +7,9 @@ public class LifeManager : MonoBehaviour
     [SerializeField] private AudioClip sonidoDanio;
     [SerializeField] private AudioClip sonidoGameOver;
     [SerializeField][Range(0f, 1f)] private float volumen = 0.4f;
+    [SerializeField] private int vidasMaximas = 3;
 
-    private int vidas = 3;
+    private int vidas;
     public int Vidas => vidas;
 
     void Awake()
@@ -17,21 +18,69 @@ public class LifeManager : MonoBehaviour
         Instance = this;
     }
 
+    void Start()
+    {
+        // Cargar vidas desde JSON via GameManager
+        if (GameManager.Instance != null)
+        {
+            SceneData sd = GameManager.Instance.GetCurrentSceneData();
+            // Si hay vidas guardadas en el JSON las usa, si no arranca con las maximas
+            vidas = (sd != null && sd.livesRemaining > 0) ? sd.livesRemaining : vidasMaximas;
+        }
+        else
+        {
+            vidas = vidasMaximas;
+        }
+
+        UIManager.Instance?.ActualizarVidas(vidas);
+    }
+
     public void PerderVida()
     {
         if (vidas <= 0) return;
-
         vidas--;
-        UIManager.Instance.ActualizarVidas(vidas);
+
+        // Sincronizar con GameManager y JSON
+        if (GameManager.Instance != null)
+        {
+            SceneData sd = GameManager.Instance.GetCurrentSceneData();
+            if (sd != null)
+            {
+                sd.livesRemaining = vidas;
+                sd.livesLost++;
+                sd.deathCount++;
+            }
+            GameManager.Instance.currentLives = vidas;
+            GameManager.Instance.currentDeaths++;
+            GameManager.Instance.SaveGame(); // Persistir en JSON
+        }
+
+        UIManager.Instance?.ActualizarVidas(vidas);
 
         if (vidas <= 0)
         {
             AudioSource.PlayClipAtPoint(sonidoGameOver, Camera.main.transform.position, volumen);
-            UIManager.Instance.MostrarGameOver();
+            UIManager.Instance?.MostrarGameOver();
         }
         else
         {
             AudioSource.PlayClipAtPoint(sonidoDanio, Camera.main.transform.position, volumen);
         }
+    }
+
+    /// <summary>Restaurar vidas al completar escena o reiniciar</summary>
+    public void ResetVidas()
+    {
+        vidas = vidasMaximas;
+
+        if (GameManager.Instance != null)
+        {
+            SceneData sd = GameManager.Instance.GetCurrentSceneData();
+            if (sd != null) sd.livesRemaining = vidas;
+            GameManager.Instance.currentLives = vidas;
+            GameManager.Instance.SaveGame();
+        }
+
+        UIManager.Instance?.ActualizarVidas(vidas);
     }
 }
