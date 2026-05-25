@@ -18,6 +18,11 @@ public class Enemigo : MonoBehaviour
     [Header("Ajustes de Combate")]
     public float tiempoEntreAtaques = 0.5f;
 
+    [Header("Físicas de Suelo")]
+    public LayerMask capaSuelo;
+    private float velocidadVertical = 0f;
+    private float gravedad = 9.81f;
+
     void Start()
     {
         ani = GetComponent<Animator>();
@@ -30,7 +35,26 @@ public class Enemigo : MonoBehaviour
     void Update()
     {
         if (target == null) return;
+
+        AplicarGravedadYSuelo();
         Comportamiento_Enemigo();
+    }
+
+    void AplicarGravedadYSuelo()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position + Vector3.up * 0.5f, Vector3.down, out hit, 1.5f, capaSuelo))
+        {
+            Vector3 pos = transform.position;
+            pos.y = hit.point.y;
+            transform.position = pos;
+            velocidadVertical = 0f;
+        }
+        else
+        {
+            velocidadVertical -= gravedad * Time.deltaTime;
+            transform.Translate(Vector3.up * velocidadVertical * Time.deltaTime, Space.World);
+        }
     }
 
     public void Comportamiento_Enemigo()
@@ -52,15 +76,15 @@ public class Enemigo : MonoBehaviour
 
             switch (rutina)
             {
-                case 0: 
+                case 0:
                     ani.SetBool("walk", false);
                     break;
-                case 1: 
+                case 1:
                     grado = Random.Range(0, 360);
                     angulo = Quaternion.Euler(0, grado, 0);
                     rutina++;
                     break;
-                case 2: 
+                case 2:
                     transform.rotation = Quaternion.RotateTowards(transform.rotation, angulo, 0.5f);
                     transform.Translate(Vector3.forward * 1 * Time.deltaTime);
                     ani.SetBool("walk", true);
@@ -85,7 +109,6 @@ public class Enemigo : MonoBehaviour
                 ani.SetBool("walk", false);
                 ani.SetBool("run", true);
 
-                
                 transform.Translate(Vector3.forward * 2 * Time.deltaTime);
             }
             else
@@ -106,7 +129,6 @@ public class Enemigo : MonoBehaviour
     {
         ani.SetBool("attack", false);
         atacando = false;
-
         tiempoSiguienteAtaque = Time.time + tiempoEntreAtaques;
     }
 }
