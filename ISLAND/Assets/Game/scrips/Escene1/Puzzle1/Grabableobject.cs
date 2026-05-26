@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Grabableobject : MonoBehaviour
+public class GrabbableObject : MonoBehaviour
 {
     public string objectID;
 
