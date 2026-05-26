@@ -54,7 +54,7 @@ public class PlayerCollector : MonoBehaviour
             currentGem.Interact();
 
             if (scene1Controller != null)
-                scene1Controller.OnGemCollected();
+                scene1Controller.OnKeyCollected(); // Cambiado de OnGemCollected() a OnKeyCollected()
 
             currentGem = null;
             ShowInteractionPrompt(false);
