@@ -3,38 +3,40 @@ using UnityEngine;
 public class Scene1Controller : MonoBehaviour
 {
     [Header("Puzzle 1: Recolección (Llaves)")]
-    public int keysRequired = 2;            // Número de llaves requeridas para abrir la puerta
+    public int keysRequired = 2;
     private int keysCollected = 0;
-    public DoorController targetDoor;       // La puerta que se abrirá al conseguir las llaves
+    private bool doorOpened = false;        // Bandera para que la puerta solo se abra UNA VEZ
+    public DoorController targetDoor;
 
     [Header("Puzzle 2: Sockets (4 Libros)")]
     public int totalSockets = 4;
     private int socketsActivated = 0;
-    
+
     [Header("Spawn de Recompensa (Llave)")]
-    public GameObject keyPrefab;            // El prefab de la llave a aparecer
-    public Transform keySpawnPoint;         // El Empty en la escena donde aparecerá la llave
-    public AudioClip puzzleCompleteSound;    // Sonido al completar el puzzle de los 4 libros
-    
+    public GameObject keyPrefab;
+    public Transform keySpawnPoint;
+    public AudioClip puzzleCompleteSound;
+
     private AudioSource audioSource;
 
     void Start()
     {
-        // Asegurarnos de tener un AudioSource en este objeto para reproducir el sonido final
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
-        {
             audioSource = gameObject.AddComponent<AudioSource>();
-        }
     }
 
-    // --- MÉTODOS DEL PUZZLE 1: RECOLECCIÓN DE LLAVES ---
+    // --- PUZZLE 1: LLAVES ---
     public void OnKeyCollected()
     {
+        // Protección: si la puerta ya se abrió, ignorar
+        if (doorOpened) return;
+
         keysCollected++;
         Debug.Log($"[Scene1Controller] Llave recolectada: {keysCollected}/{keysRequired}");
 
-        if (keysCollected >= keysRequired)
+        // Solo abre cuando se alcanzan EXACTAMENTE las llaves necesarias
+        if (keysCollected == keysRequired)
         {
             OpenPuzzleDoor();
         }
@@ -42,22 +44,26 @@ public class Scene1Controller : MonoBehaviour
 
     private void OpenPuzzleDoor()
     {
+        // Protección doble: nunca abrir dos veces
+        if (doorOpened) return;
+        doorOpened = true;
+
         if (targetDoor != null)
         {
             targetDoor.ToggleDoor();
-            Debug.Log("[Scene1Controller] ¡Puerta del puzzle abierta!");
+            Debug.Log("[Scene1Controller] ¡Puerta abierta con éxito!");
         }
         else
         {
-            Debug.LogWarning("[Scene1Controller] ¡Todas las llaves recolectadas, pero no hay ninguna puerta (Target Door) asignada en el Inspector!");
+            Debug.LogWarning("[Scene1Controller] No hay ninguna puerta (Target Door) asignada en el Inspector!");
         }
     }
 
-    // --- MÉTODOS DEL PUZZLE 2: SOCKETS ---
+    // --- PUZZLE 2: SOCKETS (LIBROS) ---
     public void OnSocketActivated()
     {
         socketsActivated++;
-        Debug.Log($"[Scene1Controller] Socket de libro activado: {socketsActivated}/{totalSockets}");
+        Debug.Log($"[Scene1Controller] Socket activado: {socketsActivated}/{totalSockets}");
 
         if (socketsActivated >= totalSockets)
         {
@@ -69,25 +75,17 @@ public class Scene1Controller : MonoBehaviour
     {
         Debug.Log("[Scene1Controller] ¡Puzzle de libros COMPLETADO!");
 
-        // 1. Reproducir sonido de éxito
         if (puzzleCompleteSound != null && audioSource != null)
-        {
             audioSource.PlayOneShot(puzzleCompleteSound);
-        }
-        else
-        {
-            Debug.LogWarning("[Scene1Controller] Sonido de puzzle completado no asignado o falta AudioSource.");
-        }
 
-        // 2. Spawnear la llave en el punto vacío (Empty)
         if (keyPrefab != null && keySpawnPoint != null)
         {
-            GameObject spawnedKey = Instantiate(keyPrefab, keySpawnPoint.position, keySpawnPoint.rotation);
-            Debug.Log($"[Scene1Controller] ¡Llave {spawnedKey.name} aparecida con éxito en {keySpawnPoint.position}!");
+            Instantiate(keyPrefab, keySpawnPoint.position, keySpawnPoint.rotation);
+            Debug.Log($"[Scene1Controller] ¡Llave spawneada en {keySpawnPoint.position}!");
         }
         else
         {
-            Debug.LogError("[Scene1Controller] No se pudo spawnear la llave. Asegúrate de asignar 'Key Prefab' y 'Key Spawn Point' en el Inspector.");
+            Debug.LogError("[Scene1Controller] Falta asignar 'Key Prefab' o 'Key Spawn Point' en el Inspector.");
         }
     }
 }

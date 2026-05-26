@@ -10,8 +10,9 @@ public class PlayerCollector : MonoBehaviour
     [Header("UI")]
     public TextMeshProUGUI interactionText;
 
-    [Header("Referencias")]
-    public Scene1Controller scene1Controller;
+    // Nota: Ya no necesitamos escene1Controller aquí porque
+    // ElementController lo notifica directamente desde dentro de Interact().
+    // Esto evita el bug de doble conteo.
 
     private ElementController currentGem;
 
@@ -51,11 +52,9 @@ public class PlayerCollector : MonoBehaviour
     {
         if (Keyboard.current.eKey.wasPressedThisFrame && currentGem != null)
         {
+            // Interact() ya maneja internamente la notificación al Scene1Controller.
+            // No hay que llamar a OnKeyCollected() desde aquí.
             currentGem.Interact();
-
-            if (scene1Controller != null)
-                scene1Controller.OnKeyCollected(); // Cambiado de OnGemCollected() a OnKeyCollected()
-
             currentGem = null;
             ShowInteractionPrompt(false);
         }
