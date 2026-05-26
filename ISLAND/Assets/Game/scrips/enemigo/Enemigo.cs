@@ -17,11 +17,23 @@ public class Enemigo : MonoBehaviour
     private float tiempoSiguienteAtaque = 0f;
     [Header("Ajustes de Combate")]
     public float tiempoEntreAtaques = 0.5f;
+    public int vida = 3;
+    private int vidaMaxima;
+
+    [Header("Visual - Cambio de Color")]
+    [SerializeField] private List<Renderer> todasLasMallas = new List<Renderer>();
+    [SerializeField] private Color colorDanoClaro = new Color(1f, 0.5f, 0.5f);
+    [SerializeField] private Color colorDanoOscuro = new Color(0.6f, 0f, 0f);
+
+    [Header("Sonidos del Enemigo (3D)")]
+    [SerializeField] private AudioClip sonidoRecibirGolpe;
+    [SerializeField] private AudioClip sonidoMorir;
+    [SerializeField][Range(0f, 1f)] private float volumenSonido = 0.6f;
 
     [Header("Físicas de Suelo")]
     public LayerMask capaSuelo;
     private float velocidadVertical = 0f;
-    private float gravedad = 9.81f;
+    private float gravity = 9.81f;
 
     void Start()
     {
@@ -30,6 +42,14 @@ public class Enemigo : MonoBehaviour
         ani.SetBool("run", false);
         ani.SetBool("attack", false);
         atacando = false;
+
+        vidaMaxima = vida;
+
+        if (todasLasMallas.Count == 0)
+        {
+            Renderer[] renderersEncontrados = GetComponentsInChildren<Renderer>();
+            todasLasMallas.AddRange(renderersEncontrados);
+        }
     }
 
     void Update()
@@ -52,7 +72,7 @@ public class Enemigo : MonoBehaviour
         }
         else
         {
-            velocidadVertical -= gravedad * Time.deltaTime;
+            velocidadVertical -= gravity * Time.deltaTime;
             transform.Translate(Vector3.up * velocidadVertical * Time.deltaTime, Space.World);
         }
     }
@@ -130,5 +150,64 @@ public class Enemigo : MonoBehaviour
         ani.SetBool("attack", false);
         atacando = false;
         tiempoSiguienteAtaque = Time.time + tiempoEntreAtaques;
+    }
+
+    public void HacerDanoAlJugador()
+    {
+        if (LifeManager.Instance != null)
+        {
+            LifeManager.Instance.PerderVida();
+        }
+    }
+
+    public void RecibirDano(int cantidad)
+    {
+        vida -= cantidad;
+
+        ActualizarColorPorDano();
+
+        if (vida <= 0)
+        {
+            if (sonidoMorir != null)
+            {
+                AudioSource.PlayClipAtPoint(sonidoMorir, transform.position, volumenSonido);
+            }
+            Morir();
+        }
+        else
+        {
+            if (sonidoRecibirGolpe != null)
+            {
+                AudioSource.PlayClipAtPoint(sonidoRecibirGolpe, transform.position, volumenSonido);
+            }
+        }
+    }
+
+    void ActualizarColorPorDano()
+    {
+        foreach (Renderer malla in todasLasMallas)
+        {
+            if (malla == null) continue;
+
+            if (vida == 2)
+            {
+                malla.material.color = colorDanoClaro;
+            }
+            else if (vida == 1)
+            {
+                malla.material.color = colorDanoOscuro;
+            }
+        }
+    }
+
+    void Morir()
+    {
+        ControladorPuente controlador = Object.FindFirstObjectByType<ControladorPuente>();
+        if (controlador != null)
+        {
+            controlador.RegistrarEnemigoMuerto();
+        }
+
+        Destroy(gameObject);
     }
 }
