@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -213,8 +213,14 @@ public class GameManager : MonoBehaviour
     }
 
     // ============================================================
-    //  METODOS PUBLICOS — llamados desde otros scripts
+    //  METODOS PUBLICOS ï¿½ llamados desde otros scripts
     // ============================================================
+
+    /// <summary>Llamado desde ElementController.cs en puzzles</summary>
+    public void RegisterCollection()
+    {
+        OnCollectibleCollected(10);
+    }
 
     /// <summary>Llamado desde Collectible.cs al recoger un objeto</summary>
     public void OnCollectibleCollected(int points)
@@ -331,7 +337,7 @@ public class GameManager : MonoBehaviour
     }
 
     // ============================================================
-    //  JSON — GUARDAR Y CARGAR
+    //  JSON ï¿½ GUARDAR Y CARGAR
     // ============================================================
     public void SaveGame()
     {
