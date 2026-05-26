@@ -94,7 +94,7 @@ public class MovePlayer : MonoBehaviour
         animator.SetFloat("VelX", x);
         animator.SetFloat("VelY", y);
 
-        animator.SetFloat("Blend", movementInput.magnitude);
+        
 
         animator.SetBool("IsJumping", !isGrounded);
         animator.SetBool("IsRunning", isRunning);

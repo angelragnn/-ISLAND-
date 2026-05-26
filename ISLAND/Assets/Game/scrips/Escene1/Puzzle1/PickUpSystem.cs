@@ -13,6 +13,12 @@ public class PickUpSystem : MonoBehaviour
 
     private Rigidbody heldRb;
     private Collider heldCollider;
+    private bool insideSocket = false;      // Evita que el jugador suelte el objeto manualmente dentro de un receptor
+
+    public void SetInsideSocket(bool value)
+    {
+        insideSocket = value;
+    }
 
     void Update()
     {
@@ -23,7 +29,7 @@ public class PickUpSystem : MonoBehaviour
             {
                 TryPickUp();
             }
-            else
+            else if (!insideSocket) // Solo permite soltar manualmente si NO estamos interactuando con un Socket
             {
                 Drop();
             }
@@ -107,9 +113,11 @@ public class PickUpSystem : MonoBehaviour
         heldCollider = null;
     }
 
-    // Método por si necesitas soltar el objeto desde otros scripts (ej: recibir daño)
+    // Método por si necesitas soltar el objeto desde otros scripts (ej: recibir daño o colocación en socket)
     public void ForceRelease()
     {
-        Drop();
+        heldObject = null;
+        heldRb = null;
+        heldCollider = null;
     }
 }

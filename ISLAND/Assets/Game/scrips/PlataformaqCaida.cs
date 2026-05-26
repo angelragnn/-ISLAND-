@@ -1,22 +1,44 @@
 using UnityEngine;
+using System.Collections;
 
 public class PlataformaCae : MonoBehaviour
 {
-    public float tiempoAntesDeCaer = 1f;
+    [Header("Configuracion")]
+    public float tiempoAntesDeCaer = 10f;
+    public float tiempoHastaDestruir = 3f;
+
     private bool pisada = false;
+    private Rigidbody rb;
+
+    void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+        if (rb == null)
+            rb = gameObject.AddComponent<Rigidbody>();
+
+        rb.isKinematic = true;
+    }
 
     void OnCollisionEnter(Collision col)
     {
         if (col.gameObject.CompareTag("Player") && !pisada)
         {
             pisada = true;
-            Invoke("Caer", tiempoAntesDeCaer);
+            StartCoroutine(ContarYCaer());
         }
     }
 
-    void Caer()
+    IEnumerator ContarYCaer()
     {
-        GetComponent<Rigidbody>().isKinematic = false;
-        Destroy(gameObject, 3f);
+        float tiempoRestante = tiempoAntesDeCaer;
+
+        while (tiempoRestante > 0f)
+        {
+            tiempoRestante -= Time.deltaTime;
+            yield return null;
+        }
+
+        rb.isKinematic = false;
+        Destroy(gameObject, tiempoHastaDestruir);
     }
 }
