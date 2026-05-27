@@ -34,6 +34,18 @@ public class PlayerCombat : MonoBehaviour
             {
                 enemigo.RecibirDano(1);
             }
+
+            EsqueletoNegro enemigoNegro = col.GetComponent<EsqueletoNegro>();
+            if (enemigoNegro != null)
+            {
+                enemigoNegro.RecibirDano(1);
+            }
+
+            JefeFinal jefe = col.GetComponent<JefeFinal>();
+            if (jefe != null)
+            {
+                jefe.RecibirDano(1);
+            }
         }
     }
 
