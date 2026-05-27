@@ -2,15 +2,19 @@ using UnityEngine;
 
 public class ZonaCaida : MonoBehaviour
 {
-    public Transform puntoSpawn;
-
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Player")) return;
 
-        LifeManager.Instance.PerderVida();
+        Debug.Log($"[ZonaCaida] Jugador cayo. Checkpoint en: {CheckpointManager.Instance?.currentCheckpointPosition}");
 
-        // Respawn
-        other.transform.position = puntoSpawn.position;
+        LifeManager.Instance?.PerderVida();
+
+        if (CheckpointManager.Instance != null)
+        {
+            Debug.Log($"[ZonaCaida] Moviendo a: {CheckpointManager.Instance.currentCheckpointPosition}");
+            CheckpointManager.Instance.RespawnPlayer();
+            Debug.Log($"[ZonaCaida] Posicion jugador despues: {CheckpointManager.Instance.playerTransform?.position}");
+        }
     }
 }
