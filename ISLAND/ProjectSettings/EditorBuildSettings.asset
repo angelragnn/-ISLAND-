@@ -6,11 +6,20 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/Game/Scenes/1Menu.unity
+    path: Assets/Game/Scenes/1MENU.unity
     guid: 99c9720ab356a0642a771bea13969a05
   - enabled: 1
-    path: Assets/Game/Scenes/2Bosque.unity
+    path: Assets/Game/Scenes/2BOSQUE.unity
     guid: ab52558d4e1adff459ff12882679fb1b
+  - enabled: 1
+    path: Assets/Game/Scenes/3Dugeon.unity
+    guid: da61571a88eb01c4b8e73d6f8bcd619d
+  - enabled: 1
+    path: Assets/Game/Scenes/4DugeonHielo.unity
+    guid: 39074f61eb7887c4a9e72eaafb5f8a71
+  - enabled: 1
+    path: Assets/Game/Scenes/5DugeonFuego.unity
+    guid: f34c1b771b0b1aa42b9888ff34cebcab
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
