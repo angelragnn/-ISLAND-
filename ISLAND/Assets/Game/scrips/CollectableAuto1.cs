@@ -9,6 +9,8 @@ public class ColectableAuto : MonoBehaviour
     public float rotateSpeed = 90f;
     public ParticleSystem particlesPrefab;
     public Color particleColor = Color.cyan;
+    public float checkpointOffsetY = 1.5f;
+    public bool esCheckpoint = false;
 
     private Vector3 startPos;
     private bool collected = false;
@@ -34,6 +36,14 @@ public class ColectableAuto : MonoBehaviour
     {
         if (collected) return;
         collected = true;
+
+        if (esCheckpoint)
+        {
+            Vector3 spawnPos = startPos + Vector3.up * checkpointOffsetY;
+            CheckpointManager.Instance?.SetCheckpoint(spawnPos);
+            Debug.Log($"[Colectable] Checkpoint guardado en: {spawnPos}");
+        }
+
         SpawnParticles();
         GameManager.Instance?.OnCollectibleCollected(pointValue);
         Destroy(gameObject, 0.1f);

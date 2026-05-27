@@ -63,6 +63,15 @@ public class LifeManager : MonoBehaviour
         else
         {
             AudioSource.PlayClipAtPoint(sonidoDanio, Camera.main.transform.position, volumen);
+
+            CheckpointManager cp = CheckpointManager.Instance;
+            if (cp != null)
+                cp.Respawn();
+            else
+            {
+                cp = Object.FindFirstObjectByType<CheckpointManager>();
+                if (cp != null) cp.Respawn();
+            }
         }
     }
 

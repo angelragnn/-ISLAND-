@@ -5,18 +5,18 @@ public class ColectableAutoZona : MonoBehaviour
     [Header("Recoleccion")]
     public int pointValue = 10;
     public float detectionRange = 2f;
-
     [Header("Zona Secreta")]
     public GameObject[] plataformasAlternativas;
-
     [Header("Animacion flotante")]
     public float floatSpeed = 1f;
     public float floatHeight = 0.3f;
     public float rotateSpeed = 90f;
-
     [Header("Particulas")]
     public ParticleSystem particlesPrefab;
     public Color particleColor = Color.cyan;
+    [Header("Checkpoint")]
+    public bool esCheckpoint = false;
+    public float checkpointOffsetY = 1.5f;
 
     private Vector3 startPos;
     private bool collected = false;
@@ -25,10 +25,8 @@ public class ColectableAutoZona : MonoBehaviour
     void Start()
     {
         startPos = transform.position;
-
         foreach (GameObject p in plataformasAlternativas)
             if (p != null) p.SetActive(false);
-
         GameObject p2 = GameObject.FindGameObjectWithTag("Player");
         if (p2 != null) jugador = p2.transform;
     }
@@ -36,10 +34,8 @@ public class ColectableAutoZona : MonoBehaviour
     void Update()
     {
         if (collected) return;
-
         transform.position = new Vector3(startPos.x, startPos.y + Mathf.Sin(Time.time * floatSpeed) * floatHeight, startPos.z);
         transform.Rotate(Vector3.up * rotateSpeed * Time.deltaTime);
-
         if (jugador != null && Vector3.Distance(transform.position, jugador.position) <= detectionRange)
             Collect();
     }
@@ -49,13 +45,17 @@ public class ColectableAutoZona : MonoBehaviour
         if (collected) return;
         collected = true;
 
+        if (esCheckpoint)
+        {
+            Vector3 spawnPos = startPos + Vector3.up * checkpointOffsetY;
+            CheckpointManager.Instance?.SetCheckpoint(spawnPos);
+            Debug.Log($"[ColectableZona] Checkpoint guardado en: {spawnPos}");
+        }
+
         foreach (GameObject p in plataformasAlternativas)
             if (p != null) p.SetActive(true);
-
         SpawnParticles();
-
         GameManager.Instance?.OnCollectibleCollected(pointValue);
-
         Destroy(gameObject, 0.1f);
     }
 

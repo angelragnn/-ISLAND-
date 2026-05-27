@@ -190,7 +190,7 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(1.5f);
         CheckpointManager cp = FindObjectOfType<CheckpointManager>();
-        if (cp != null) cp.RespawnPlayer();
+        if (cp != null) cp.Respawn();
     }
 
     IEnumerator ReloadSceneDelay(float delay)
