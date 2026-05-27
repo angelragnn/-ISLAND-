@@ -27,7 +27,14 @@ public class PlataformaCae : MonoBehaviour
         rotacionOriginal = transform.rotation;
 
         if (GameManager.Instance != null)
+        {
             GameManager.Instance.OnPlayerDied += Resetear;
+            Debug.Log($"[PlataformaCae] {gameObject.name} suscrita al evento OnPlayerDied");
+        }
+        else
+        {
+            Debug.LogWarning($"[PlataformaCae] {gameObject.name} NO encontro GameManager en Start");
+        }
     }
 
     void OnDestroy()
@@ -64,6 +71,8 @@ public class PlataformaCae : MonoBehaviour
 
     public void Resetear()
     {
+        Debug.Log($"[PlataformaCae] {gameObject.name} recibio Resetear()");
+
         if (rutinaActual != null)
         {
             StopCoroutine(rutinaActual);
