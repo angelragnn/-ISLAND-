@@ -1623,6 +1623,10 @@ MonoBehaviour:
   panelInstrucciones: {fileID: 183449809}
   textoVidas: {fileID: 0}
   panelGameOver: {fileID: 0}
+  textoLlaves: {fileID: 0}
+  totalLlavesRequeridas: 2
+  textoGemas: {fileID: 0}
+  totalGemasRequeridas: 10
 --- !u!4 &1430683629
 Transform:
   m_ObjectHideFlags: 0
@@ -1939,7 +1943,14 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: hola mundo
+  m_text: "C\xD3MO JUGAR (GU\xCDA R\xC1PIDA)\nMoverse: Usa las teclas W, A, S, D
+    o las Flechas del teclado.\n\nMisi\xF3n Principal: Derrota a 5 Esqueletos Negros
+    para desbloquear y despertar al Jefe Final.\n\nCuidado: El Jefe Final es sumamente
+    peligroso; \xA1puede quitarte 2 vidas de un solo golpe!\n\nCurarse: Recolecta
+    los Corazones esparcidos por el mapa para recuperar vida (M\xE1ximo: 5 vidas).\n\nPeligro:
+    Si caes a la Lava, perder\xE1s una vida y reaparecer\xE1s en el \xFAltimo Checkpoint
+    activado.\n\nGame Over: Si tus vidas llegan a 0, el nivel se reiniciar\xE1 por
+    completo desde el principio."
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1969,7 +1980,7 @@ MonoBehaviour:
   m_fontSize: 36
   m_fontSizeBase: 36
   m_fontWeight: 400
-  m_enableAutoSizing: 0
+  m_enableAutoSizing: 1
   m_fontSizeMin: 18
   m_fontSizeMax: 72
   m_fontStyle: 0
