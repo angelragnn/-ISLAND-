@@ -7,7 +7,7 @@ public class LifeManager : MonoBehaviour
     [SerializeField] private AudioClip sonidoDanio;
     [SerializeField] private AudioClip sonidoGameOver;
     [SerializeField][Range(0f, 1f)] private float volumen = 0.4f;
-    [SerializeField] private int vidasMaximas = 3;
+    [SerializeField] private int vidasMaximas = 5;
 
     private int vidas;
     public int Vidas => vidas;
@@ -22,12 +22,18 @@ public class LifeManager : MonoBehaviour
     {
         if (GameManager.Instance != null)
         {
-            SceneData sd = GameManager.Instance.GetCurrentSceneData();
-            vidas = (sd != null && sd.livesRemaining > 0) ? sd.livesRemaining : vidasMaximas;
+            vidas = GameManager.Instance.currentLives;
         }
         else
         {
-            vidas = vidasMaximas;
+            if (PlayerPrefs.HasKey("VidasGuardadasGlobal"))
+            {
+                vidas = PlayerPrefs.GetInt("VidasGuardadasGlobal");
+            }
+            else
+            {
+                vidas = vidasMaximas;
+            }
         }
 
         UIManager.Instance?.ActualizarVidas(vidas);
@@ -38,20 +44,7 @@ public class LifeManager : MonoBehaviour
         if (vidas <= 0) return;
         vidas--;
 
-        if (GameManager.Instance != null)
-        {
-            SceneData sd = GameManager.Instance.GetCurrentSceneData();
-            if (sd != null)
-            {
-                sd.livesRemaining = vidas;
-                sd.livesLost++;
-                sd.deathCount++;
-            }
-            GameManager.Instance.currentLives = vidas;
-            GameManager.Instance.currentDeaths++;
-            GameManager.Instance.NotifyPlayerDied();
-            GameManager.Instance.SaveGame();
-        }
+        ActualizarPersistencia();
 
         UIManager.Instance?.ActualizarVidas(vidas);
 
@@ -63,30 +56,40 @@ public class LifeManager : MonoBehaviour
         else
         {
             AudioSource.PlayClipAtPoint(sonidoDanio, Camera.main.transform.position, volumen);
+        }
+    }
 
-            CheckpointManager cp = CheckpointManager.Instance;
-            if (cp != null)
-                cp.Respawn();
-            else
+    public void RecolectarCorazon()
+    {
+        if (vidas >= vidasMaximas) return;
+        vidas++;
+
+        ActualizarPersistencia();
+
+        UIManager.Instance?.ActualizarVidas(vidas);
+    }
+
+    private void ActualizarPersistencia()
+    {
+        PlayerPrefs.SetInt("VidasGuardadasGlobal", vidas);
+        PlayerPrefs.Save();
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.currentLives = vidas;
+            SceneData sd = GameManager.Instance.GetCurrentSceneData();
+            if (sd != null)
             {
-                cp = Object.FindFirstObjectByType<CheckpointManager>();
-                if (cp != null) cp.Respawn();
+                sd.livesRemaining = vidas;
             }
+            GameManager.Instance.SaveGame();
         }
     }
 
     public void ResetVidas()
     {
         vidas = vidasMaximas;
-
-        if (GameManager.Instance != null)
-        {
-            SceneData sd = GameManager.Instance.GetCurrentSceneData();
-            if (sd != null) sd.livesRemaining = vidas;
-            GameManager.Instance.currentLives = vidas;
-            GameManager.Instance.SaveGame();
-        }
-
+        ActualizarPersistencia();
         UIManager.Instance?.ActualizarVidas(vidas);
     }
 }

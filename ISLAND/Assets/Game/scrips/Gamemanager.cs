@@ -10,20 +10,18 @@ public class SceneData
 {
     public int collectiblesCollected = 0;
     public int totalCollectibles = 0;
-    public int livesRemaining = 3;
+    public int livesRemaining = 5;
     public int livesLost = 0;
     public int deathCount = 0;
     public bool completed = false;
     public float completionTime = 0f;
     public int score = 0;
 
-    // Checkpoint persistente
     public bool hasCheckpoint = false;
     public float checkpointX = 0f;
     public float checkpointY = 0f;
     public float checkpointZ = 0f;
 
-    // Elementos recolectados y completados
     public List<string> collectedItems = new List<string>();
     public List<string> completedPuzzles = new List<string>();
     public List<string> openedDoors = new List<string>();
@@ -56,7 +54,7 @@ public class GameManager : MonoBehaviour
     public static GameManager Instance { get; private set; }
 
     [Header("Configuracion de Vidas")]
-    public int maxLives = 3;
+    public int maxLives = 5;
 
     [HideInInspector] public int currentLives;
     [HideInInspector] public int currentScore;
@@ -107,7 +105,26 @@ public class GameManager : MonoBehaviour
         if (currentSceneIndex > 0)
         {
             SceneData sd = GetCurrentSceneData();
-            currentLives = sd.livesRemaining > 0 ? sd.livesRemaining : maxLives;
+
+            if (currentSceneIndex == 1)
+            {
+                currentLives = maxLives;
+                PlayerPrefs.SetInt("VidasGuardadasGlobal", currentLives);
+                PlayerPrefs.Save();
+            }
+            else
+            {
+                if (PlayerPrefs.HasKey("VidasGuardadasGlobal"))
+                {
+                    currentLives = PlayerPrefs.GetInt("VidasGuardadasGlobal");
+                }
+                else
+                {
+                    currentLives = sd.livesRemaining > 0 ? sd.livesRemaining : maxLives;
+                }
+            }
+
+            sd.livesRemaining = currentLives;
             currentScore = sd.score;
             currentDeaths = sd.deathCount;
             collectiblesCollected = sd.collectiblesCollected;
@@ -162,6 +179,9 @@ public class GameManager : MonoBehaviour
     {
         currentDeaths++;
         currentLives--;
+        PlayerPrefs.SetInt("VidasGuardadasGlobal", currentLives);
+        PlayerPrefs.Save();
+
         SceneData sd = GetCurrentSceneData();
         if (sd != null) { sd.deathCount = currentDeaths; sd.livesLost++; sd.livesRemaining = currentLives; }
         gameData.sessionStats.totalDeaths++;
@@ -209,6 +229,10 @@ public class GameManager : MonoBehaviour
     IEnumerator ReloadSceneDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
+        currentLives = maxLives;
+        PlayerPrefs.SetInt("VidasGuardadasGlobal", currentLives);
+        PlayerPrefs.Save();
+
         SceneData sd = GetCurrentSceneData();
         if (sd != null) { sd.livesRemaining = maxLives; sd.collectiblesCollected = 0; sd.score = 0; }
         SaveGame();
@@ -262,8 +286,6 @@ public class GameManager : MonoBehaviour
 
     public void ResetAllData() { gameData = new GameData(); SaveGame(); }
 
-    // --- Métodos de persistencia de elementos en el JSON ---
-
     public bool IsCollectibleCollected(string id)
     {
         SceneData sd = GetCurrentSceneData();
@@ -278,7 +300,7 @@ public class GameManager : MonoBehaviour
             if (!sd.collectedItems.Contains(id))
             {
                 sd.collectedItems.Add(id);
-                OnCollectibleCollected(points); // Llama internamente a SaveGame()
+                OnCollectibleCollected(points);
             }
         }
     }
