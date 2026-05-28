@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: bb308dd2dbfcdad4480a33d7990b9b13
+guid: d5d030261d176bb48b5756b62049c15e
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -110,67 +110,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: DIALOGOS NIVELES_0
+      name: boton hielo_0
       rect:
         serializedVersion: 2
-        x: 297
-        y: 358
-        width: 720
-        height: 431
+        x: 0
+        y: 50
+        width: 1430
+        height: 648
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 6527196ffa184db4cb7a6d4550457000
-      internalID: -89224824
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: DIALOGOS NIVELES_1
-      rect:
-        serializedVersion: 2
-        x: 30
-        y: 31
-        width: 191
-        height: 185
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bf241ce786a3b634184f5aee9ebe8ba9
-      internalID: -910118773
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: DIALOGOS NIVELES_2
-      rect:
-        serializedVersion: 2
-        x: 425
-        y: 246
-        width: 186
-        height: 43
-      alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 654a637512891a0429f71b4b0fe738b8
-      internalID: 1939329693
+      spriteID: 8089e182c0bda0945b72e8e87717205a
+      internalID: -1673519142
       vertices: []
       indices: 
       edges: []
@@ -179,7 +135,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: f0c77b7d353e9824996803de8f5a7dfa
+    spriteID: 53d59cd0e1be8294fb3964fc25b32512
     internalID: 0
     vertices: []
     indices: 
@@ -189,9 +145,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      DIALOGOS NIVELES_0: -89224824
-      DIALOGOS NIVELES_1: -910118773
-      DIALOGOS NIVELES_2: 1939329693
+      boton hielo_0: -1673519142
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
