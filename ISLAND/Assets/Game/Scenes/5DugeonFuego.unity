@@ -10053,6 +10053,8 @@ MonoBehaviour:
   panelGameOver: {fileID: 9004715646269111666}
   textoLlaves: {fileID: 0}
   totalLlavesRequeridas: 2
+  textoGemas: {fileID: 0}
+  totalGemasRequeridas: 10
 --- !u!4 &635056839
 Transform:
   m_ObjectHideFlags: 0
@@ -27607,6 +27609,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 363497fe4683cf046a44dfc0a85fe365, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ZonaCaida
+  puntoDeRespawn: {fileID: 0}
 --- !u!65 &1933511879
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -31467,15 +31470,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 889074931851040607, guid: fe255ee4b5b6d574e9df71cbbb9dd775, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 216.81
+      value: 111.42
       objectReference: {fileID: 0}
     - target: {fileID: 889074931851040607, guid: fe255ee4b5b6d574e9df71cbbb9dd775, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 5.27
+      value: 17.67
       objectReference: {fileID: 0}
     - target: {fileID: 889074931851040607, guid: fe255ee4b5b6d574e9df71cbbb9dd775, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -150.83
+      value: -2.18
       objectReference: {fileID: 0}
     - target: {fileID: 889074931851040607, guid: fe255ee4b5b6d574e9df71cbbb9dd775, type: 3}
       propertyPath: m_LocalRotation.w

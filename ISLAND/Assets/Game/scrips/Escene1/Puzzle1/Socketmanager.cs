@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -14,13 +14,13 @@ public class SocketReceiver : MonoBehaviour
     private bool playerInside = false;
     private bool readySoundPlayed = false;
     private PickUpSystem pickUp;
-    private Scene1Controller scene1Controller; // Referencia automática al controlador de escena
+    private Scene1Controller scene1Controller;
     private AudioSource audioSource;
 
     void Start()
     {
         pickUp = FindFirstObjectByType<PickUpSystem>();
-        scene1Controller = FindFirstObjectByType<Scene1Controller>(); // Buscar el controlador en la escena automáticamente
+        scene1Controller = FindFirstObjectByType<Scene1Controller>();
         
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
@@ -140,7 +140,7 @@ public class SocketReceiver : MonoBehaviour
 
         SetAuraColor(new Color(1f, 0.8f, 0f));
 
-        // NOTIFICAR AL CONTROLADOR DE ESCENA
+
         if (scene1Controller != null)
         {
             scene1Controller.OnSocketActivated();

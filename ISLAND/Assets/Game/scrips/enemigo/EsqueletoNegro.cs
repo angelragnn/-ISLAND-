@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -45,7 +45,7 @@ public class EsqueletoNegro : MonoBehaviour
         ani.SetBool("attack", false);
         atacando = false;
 
-        // ¡ESTO SOLUCIONA EL SPAWNER! Si nace sin target, busca automáticamente al objeto con el Tag "Player"
+
         if (target == null)
         {
             target = GameObject.FindWithTag("Player");

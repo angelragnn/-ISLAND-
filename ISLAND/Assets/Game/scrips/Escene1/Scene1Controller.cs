@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Scene1Controller : MonoBehaviour
 {
@@ -25,11 +25,11 @@ public class Scene1Controller : MonoBehaviour
         if (audioSource == null)
             audioSource = gameObject.AddComponent<AudioSource>();
 
-        // Mostrar estado inicial en la UI al arrancar la escena
+
         ActualizarUILlaves();
     }
 
-    // --- PUZZLE 1: LLAVES ---
+
     public void OnKeyCollected()
     {
         if (doorOpened) return;
@@ -37,7 +37,7 @@ public class Scene1Controller : MonoBehaviour
         keysCollected++;
         Debug.Log($"[Scene1Controller] Llave recolectada: {keysCollected}/{keysRequired}");
 
-        // Actualizar la UI directamente aquí, sin depender de eventos del GameManager
+
         ActualizarUILlaves();
 
         if (keysCollected == keysRequired)
@@ -70,7 +70,7 @@ public class Scene1Controller : MonoBehaviour
         }
     }
 
-    // --- PUZZLE 2: SOCKETS (LIBROS) ---
+
     public void OnSocketActivated()
     {
         socketsActivated++;

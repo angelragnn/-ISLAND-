@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlataformaMovil : MonoBehaviour
 {
@@ -24,7 +24,7 @@ public class PlataformaMovil : MonoBehaviour
         float t = (Mathf.Sin(Time.time * velocidad) + 1f) / 2f;
         transform.position = Vector3.Lerp(puntoA, puntoB, t);
 
-        // Mover al jugador la misma diferencia que se movio la plataforma
+
         Vector3 delta = transform.position - posicionAnterior;
         if (jugadorEncima != null)
             jugadorEncima.position += delta;

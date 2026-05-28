@@ -1,10 +1,10 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 
-// ============================================================
-//  COLLECTIBLE — Poner este script en cada objeto recolectable
-//  El objeto DEBE tener el tag "Recolectable"
-//  y un Collider con isTrigger = true
-// ============================================================
+
+
+
+
+
 public class Collectible : MonoBehaviour
 {
     [Header("Configuracion")]
@@ -12,7 +12,7 @@ public class Collectible : MonoBehaviour
     public Color particleColor = Color.cyan;
 
     [Header("Particulas")]
-    public ParticleSystem particlesPrefab;   // Arrastra un Particle System desde el Inspector
+    public ParticleSystem particlesPrefab;
 
     [Header("Animacion flotante")]
     public float floatSpeed = 1f;
@@ -24,7 +24,7 @@ public class Collectible : MonoBehaviour
 
     void Start()
     {
-        // Asegurarse de que tenga el tag correcto
+
         if (!gameObject.CompareTag("Recolectable"))
             gameObject.tag = "Recolectable";
 
@@ -35,26 +35,26 @@ public class Collectible : MonoBehaviour
     {
         if (collected) return;
 
-        // Animacion flotante
+
         float newY = startPos.y + Mathf.Sin(Time.time * floatSpeed) * floatHeight;
         transform.position = new Vector3(startPos.x, newY, startPos.z);
         transform.Rotate(Vector3.up * rotateSpeed * Time.deltaTime);
     }
 
-    /// <summary>Llamado desde GameManager via Raycast O por trigger directo</summary>
+
     public void Collect()
     {
         if (collected) return;
         collected = true;
 
-        // Lanzar particulas del color asignado
+
         SpawnParticles();
 
-        // Notificar al GameManager
+
         if (GameManager.Instance != null)
             GameManager.Instance.OnCollectibleCollected(pointValue);
 
-        // Destruir objeto
+
         Destroy(gameObject, 0.1f);
     }
 

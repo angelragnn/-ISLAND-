@@ -1,22 +1,22 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class ZonaCaida : MonoBehaviour
 {
     [Header("Configuración de Respawn")]
-    [SerializeField] private Transform puntoDeRespawn; // Arrastra aquí tu GameObject vacío
+    [SerializeField] private Transform puntoDeRespawn;
 
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Player")) return;
 
-        // 1. Gestionar la vida
+
         LifeManager.Instance?.PerderVida();
 
-        // 2. Mover al jugador al punto de respawn
+
         if (puntoDeRespawn != null)
         {
-            // Desactivamos el CharacterController/Rigidbody temporalmente 
-            // para evitar conflictos con la física al teletransportar
+
+
             CharacterController cc = other.GetComponent<CharacterController>();
             if (cc != null) cc.enabled = false;
 

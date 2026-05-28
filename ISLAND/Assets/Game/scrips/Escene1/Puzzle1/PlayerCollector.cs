@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 using TMPro;
 
@@ -10,9 +10,9 @@ public class PlayerCollector : MonoBehaviour
     [Header("UI")]
     public TextMeshProUGUI interactionText;
 
-    // Nota: Ya no necesitamos escene1Controller aquí porque
-    // ElementController lo notifica directamente desde dentro de Interact().
-    // Esto evita el bug de doble conteo.
+
+
+
 
     private ElementController currentGem;
 
@@ -52,8 +52,8 @@ public class PlayerCollector : MonoBehaviour
     {
         if (Keyboard.current.eKey.wasPressedThisFrame && currentGem != null)
         {
-            // Interact() ya maneja internamente la notificación al Scene1Controller.
-            // No hay que llamar a OnKeyCollected() desde aquí.
+
+
             currentGem.Interact();
             currentGem = null;
             ShowInteractionPrompt(false);
