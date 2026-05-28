@@ -13,6 +13,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI textoVidas;
     [SerializeField] private GameObject panelGameOver;
 
+    [Header("Contador de Llaves")]
+    [SerializeField] private TextMeshProUGUI textoLlaves;
+    [SerializeField] private int totalLlavesRequeridas = 2; // Ajusta esto al mismo valor que keysRequired en Scene1Controller
+
+    private int llavesActuales = 0;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -32,6 +38,41 @@ public class UIManager : MonoBehaviour
     {
         if (LifeManager.Instance != null && textoVidas != null)
             ActualizarVidas(LifeManager.Instance.Vidas);
+
+        // Suscribirse al evento del GameManager
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnCollectiblePickedUp += OnLlaveRecolectada;
+
+        // Mostrar el estado inicial: "Llave 0/2"
+        ActualizarTextoLlaves();
+    }
+
+    private void OnDestroy()
+    {
+        // Desuscribirse para evitar memory leaks
+        if (GameManager.Instance != null)
+            GameManager.Instance.OnCollectiblePickedUp -= OnLlaveRecolectada;
+    }
+
+    // Este método se llama automáticamente cada vez que se recoge un coleccionable
+    private void OnLlaveRecolectada(int recolectadas, int total)
+    {
+        llavesActuales = recolectadas;
+        ActualizarTextoLlaves();
+    }
+
+    private void ActualizarTextoLlaves()
+    {
+        if (textoLlaves != null)
+            textoLlaves.text = $"Llave {llavesActuales}/{totalLlavesRequeridas}";
+    }
+
+    // Método público por si necesitas actualizar las llaves desde otro script
+    public void SetLlaves(int actuales, int total)
+    {
+        llavesActuales = actuales;
+        totalLlavesRequeridas = total;
+        ActualizarTextoLlaves();
     }
 
     public void Jugar()
