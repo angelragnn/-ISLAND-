@@ -8,7 +8,7 @@ using UnityEngine;
 public class Collectible : MonoBehaviour
 {
     [Header("Configuracion")]
-    public int pointValue = 10;
+    public int pointValue = 1;
     public Color particleColor = Color.cyan;
 
     [Header("Particulas")]
@@ -58,7 +58,7 @@ public class Collectible : MonoBehaviour
         Destroy(gameObject, 0.1f);
     }
 
-    // Recogida por contacto fisico (alternativa al raycast)
+    
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -71,7 +71,7 @@ public class Collectible : MonoBehaviour
         {
             ParticleSystem ps = Instantiate(particlesPrefab, transform.position, Quaternion.identity);
 
-            // Aplicar el color asignado a este recolectable
+           
             var main = ps.main;
             main.startColor = particleColor;
 
@@ -80,7 +80,7 @@ public class Collectible : MonoBehaviour
         }
         else
         {
-            // Si no hay prefab, crear particulas basicas en codigo
+           
             GameObject psObj = new GameObject("Particles_" + gameObject.name);
             psObj.transform.position = transform.position;
 

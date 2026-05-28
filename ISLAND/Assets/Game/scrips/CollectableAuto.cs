@@ -3,7 +3,7 @@ using UnityEngine;
 public class ColectableAutoZona : MonoBehaviour
 {
     [Header("Recoleccion")]
-    public int pointValue = 10;
+    public int pointValue = 1;
     public float detectionRange = 2f;
     [Header("Zona Secreta")]
     public GameObject[] plataformasAlternativas;
@@ -44,18 +44,17 @@ public class ColectableAutoZona : MonoBehaviour
     {
         if (collected) return;
         collected = true;
-
         if (esCheckpoint)
         {
             Vector3 spawnPos = startPos + Vector3.up * checkpointOffsetY;
             CheckpointManager.Instance?.SetCheckpoint(spawnPos);
             Debug.Log($"[ColectableZona] Checkpoint guardado en: {spawnPos}");
         }
-
         foreach (GameObject p in plataformasAlternativas)
             if (p != null) p.SetActive(true);
         SpawnParticles();
         GameManager.Instance?.OnCollectibleCollected(pointValue);
+        UIManager.Instance?.AgregarGema(pointValue);
         Destroy(gameObject, 0.1f);
     }
 

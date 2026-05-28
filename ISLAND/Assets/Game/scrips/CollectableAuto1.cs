@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class ColectableAuto : MonoBehaviour
 {
-    public int pointValue = 10;
+    public int pointValue = 1;
     public float detectionRange = 2f;
     public float floatSpeed = 1f;
     public float floatHeight = 0.3f;
@@ -36,16 +36,15 @@ public class ColectableAuto : MonoBehaviour
     {
         if (collected) return;
         collected = true;
-
         if (esCheckpoint)
         {
             Vector3 spawnPos = startPos + Vector3.up * checkpointOffsetY;
             CheckpointManager.Instance?.SetCheckpoint(spawnPos);
             Debug.Log($"[Colectable] Checkpoint guardado en: {spawnPos}");
         }
-
         SpawnParticles();
         GameManager.Instance?.OnCollectibleCollected(pointValue);
+        UIManager.Instance?.AgregarGema(pointValue);
         Destroy(gameObject, 0.1f);
     }
 
