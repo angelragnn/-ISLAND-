@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class JefeFinal : MonoBehaviour
 {
@@ -46,6 +47,11 @@ public class JefeFinal : MonoBehaviour
     {
         ani = GetComponent<Animator>();
         fuenteAudio = GetComponent<AudioSource>();
+
+        if (fuenteAudio == null)
+        {
+            fuenteAudio = gameObject.AddComponent<AudioSource>();
+        }
 
         if (target == null)
         {
@@ -279,5 +285,13 @@ public class JefeFinal : MonoBehaviour
 
         Collider col = GetComponent<Collider>();
         if (col != null) col.enabled = false;
+
+        StartCoroutine(EsperarYCambiarEscena());
+    }
+
+    IEnumerator EsperarYCambiarEscena()
+    {
+        yield return new WaitForSeconds(3.5f);
+        SceneManager.LoadScene("victoria");
     }
 }
