@@ -15,7 +15,7 @@ public class UIManager : MonoBehaviour
 
     [Header("Contador de Llaves")]
     [SerializeField] private TextMeshProUGUI textoLlaves;
-    [SerializeField] private int totalLlavesRequeridas = 2; // Ajusta esto al mismo valor que keysRequired en Scene1Controller
+    [SerializeField] private int totalLlavesRequeridas = 2;
 
     private int llavesActuales = 0;
 
@@ -32,32 +32,22 @@ public class UIManager : MonoBehaviour
 
         if (panelGameOver != null)
             panelGameOver.SetActive(false);
+
+        // Inicializar texto desde Awake para que esté listo antes que Scene1Controller
+        ActualizarTextoLlaves();
     }
 
     private void Start()
     {
         if (LifeManager.Instance != null && textoVidas != null)
             ActualizarVidas(LifeManager.Instance.Vidas);
-
-        // Suscribirse al evento del GameManager
-        if (GameManager.Instance != null)
-            GameManager.Instance.OnCollectiblePickedUp += OnLlaveRecolectada;
-
-        // Mostrar el estado inicial: "Llave 0/2"
-        ActualizarTextoLlaves();
     }
 
-    private void OnDestroy()
+    // Llamado directamente desde Scene1Controller
+    public void SetLlaves(int actuales, int total)
     {
-        // Desuscribirse para evitar memory leaks
-        if (GameManager.Instance != null)
-            GameManager.Instance.OnCollectiblePickedUp -= OnLlaveRecolectada;
-    }
-
-    // Este método se llama automáticamente cada vez que se recoge un coleccionable
-    private void OnLlaveRecolectada(int recolectadas, int total)
-    {
-        llavesActuales = recolectadas;
+        llavesActuales = actuales;
+        totalLlavesRequeridas = total;
         ActualizarTextoLlaves();
     }
 
@@ -65,14 +55,6 @@ public class UIManager : MonoBehaviour
     {
         if (textoLlaves != null)
             textoLlaves.text = $"Llave {llavesActuales}/{totalLlavesRequeridas}";
-    }
-
-    // Método público por si necesitas actualizar las llaves desde otro script
-    public void SetLlaves(int actuales, int total)
-    {
-        llavesActuales = actuales;
-        totalLlavesRequeridas = total;
-        ActualizarTextoLlaves();
     }
 
     public void Jugar()

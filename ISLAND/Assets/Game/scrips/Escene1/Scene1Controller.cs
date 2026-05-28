@@ -5,7 +5,7 @@ public class Scene1Controller : MonoBehaviour
     [Header("Puzzle 1: Recolección (Llaves)")]
     public int keysRequired = 2;
     private int keysCollected = 0;
-    private bool doorOpened = false;        // Bandera para que la puerta solo se abra UNA VEZ
+    private bool doorOpened = false;
     public DoorController targetDoor;
 
     [Header("Puzzle 2: Sockets (4 Libros)")]
@@ -24,27 +24,38 @@ public class Scene1Controller : MonoBehaviour
         audioSource = GetComponent<AudioSource>();
         if (audioSource == null)
             audioSource = gameObject.AddComponent<AudioSource>();
+
+        // Mostrar estado inicial en la UI al arrancar la escena
+        ActualizarUILlaves();
     }
 
     // --- PUZZLE 1: LLAVES ---
     public void OnKeyCollected()
     {
-        // Protección: si la puerta ya se abrió, ignorar
         if (doorOpened) return;
 
         keysCollected++;
         Debug.Log($"[Scene1Controller] Llave recolectada: {keysCollected}/{keysRequired}");
 
-        // Solo abre cuando se alcanzan EXACTAMENTE las llaves necesarias
+        // Actualizar la UI directamente aquí, sin depender de eventos del GameManager
+        ActualizarUILlaves();
+
         if (keysCollected == keysRequired)
         {
             OpenPuzzleDoor();
         }
     }
 
+    private void ActualizarUILlaves()
+    {
+        if (UIManager.Instance != null)
+            UIManager.Instance.SetLlaves(keysCollected, keysRequired);
+        else
+            Debug.LogWarning("[Scene1Controller] UIManager.Instance es null, no se pudo actualizar el texto de llaves.");
+    }
+
     private void OpenPuzzleDoor()
     {
-        // Protección doble: nunca abrir dos veces
         if (doorOpened) return;
         doorOpened = true;
 
