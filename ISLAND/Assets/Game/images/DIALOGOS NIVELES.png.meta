@@ -140,7 +140,7 @@ TextureImporter:
         width: 191
         height: 185
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
@@ -149,6 +149,28 @@ TextureImporter:
       bones: []
       spriteID: bf241ce786a3b634184f5aee9ebe8ba9
       internalID: -910118773
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: DIALOGOS NIVELES_2
+      rect:
+        serializedVersion: 2
+        x: 422
+        y: 237
+        width: 198
+        height: 59
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: defd41d7fbfb39c41885a1e492d9ddb9
+      internalID: 817715354
       vertices: []
       indices: 
       edges: []
@@ -169,6 +191,7 @@ TextureImporter:
     nameFileIdTable:
       DIALOGOS NIVELES_0: -89224824
       DIALOGOS NIVELES_1: -910118773
+      DIALOGOS NIVELES_2: 817715354
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
