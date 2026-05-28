@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -15,6 +16,18 @@ public class SceneData
     public bool completed = false;
     public float completionTime = 0f;
     public int score = 0;
+
+    // Checkpoint persistente
+    public bool hasCheckpoint = false;
+    public float checkpointX = 0f;
+    public float checkpointY = 0f;
+    public float checkpointZ = 0f;
+
+    // Elementos recolectados y completados
+    public List<string> collectedItems = new List<string>();
+    public List<string> completedPuzzles = new List<string>();
+    public List<string> openedDoors = new List<string>();
+    public List<string> activatedSockets = new List<string>();
 }
 
 [Serializable]
@@ -69,7 +82,7 @@ public class GameManager : MonoBehaviour
         if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
         DontDestroyOnLoad(gameObject);
-        savePath = Path.Combine(Application.persistentDataPath, "GameData.json");
+        savePath = Path.Combine(Application.streamingAssetsPath, "GameData.json");
         LoadGame();
     }
 
@@ -205,18 +218,137 @@ public class GameManager : MonoBehaviour
     public void SaveGame()
     {
         gameData.timestamp = DateTime.Now.ToString("o");
-        File.WriteAllText(savePath, JsonUtility.ToJson(gameData, true));
+        try
+        {
+            if (!Directory.Exists(Application.streamingAssetsPath))
+            {
+                Directory.CreateDirectory(Application.streamingAssetsPath);
+            }
+            File.WriteAllText(savePath, JsonUtility.ToJson(gameData, true));
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[GameManager] Error al guardar juego: {e.Message}");
+        }
     }
 
     public void LoadGame()
     {
+        if (!Directory.Exists(Application.streamingAssetsPath))
+        {
+            Directory.CreateDirectory(Application.streamingAssetsPath);
+        }
+
         if (File.Exists(savePath))
-            gameData = JsonUtility.FromJson<GameData>(File.ReadAllText(savePath));
+        {
+            try
+            {
+                string json = File.ReadAllText(savePath);
+                gameData = JsonUtility.FromJson<GameData>(json);
+                if (gameData == null) gameData = new GameData();
+            }
+            catch (Exception e)
+            {
+                Debug.LogError($"[GameManager] Error al cargar JSON: {e.Message}");
+                gameData = new GameData();
+            }
+        }
         else
+        {
             gameData = new GameData();
+            SaveGame();
+        }
     }
 
     public void ResetAllData() { gameData = new GameData(); SaveGame(); }
+
+    // --- Métodos de persistencia de elementos en el JSON ---
+
+    public bool IsCollectibleCollected(string id)
+    {
+        SceneData sd = GetCurrentSceneData();
+        return sd != null && sd.collectedItems != null && sd.collectedItems.Contains(id);
+    }
+
+    public void RecordCollectible(string id, int points)
+    {
+        SceneData sd = GetCurrentSceneData();
+        if (sd != null && sd.collectedItems != null)
+        {
+            if (!sd.collectedItems.Contains(id))
+            {
+                sd.collectedItems.Add(id);
+                OnCollectibleCollected(points); // Llama internamente a SaveGame()
+            }
+        }
+    }
+
+    public bool IsDoorOpened(string id)
+    {
+        SceneData sd = GetCurrentSceneData();
+        return sd != null && sd.openedDoors != null && sd.openedDoors.Contains(id);
+    }
+
+    public void RecordDoorOpened(string id)
+    {
+        SceneData sd = GetCurrentSceneData();
+        if (sd != null && sd.openedDoors != null)
+        {
+            if (!sd.openedDoors.Contains(id))
+            {
+                sd.openedDoors.Add(id);
+                SaveGame();
+            }
+        }
+    }
+
+    public bool IsSocketActivated(string id)
+    {
+        SceneData sd = GetCurrentSceneData();
+        return sd != null && sd.activatedSockets != null && sd.activatedSockets.Contains(id);
+    }
+
+    public void RecordSocketActivated(string id)
+    {
+        SceneData sd = GetCurrentSceneData();
+        if (sd != null && sd.activatedSockets != null)
+        {
+            if (!sd.activatedSockets.Contains(id))
+            {
+                sd.activatedSockets.Add(id);
+                SaveGame();
+            }
+        }
+    }
+
+    public bool HasSavedCheckpoint()
+    {
+        SceneData sd = GetCurrentSceneData();
+        return sd != null && sd.hasCheckpoint;
+    }
+
+    public Vector3 GetSavedCheckpoint()
+    {
+        SceneData sd = GetCurrentSceneData();
+        if (sd != null && sd.hasCheckpoint)
+        {
+            return new Vector3(sd.checkpointX, sd.checkpointY, sd.checkpointZ);
+        }
+        return Vector3.zero;
+    }
+
+    public void SaveCheckpoint(Vector3 position)
+    {
+        SceneData sd = GetCurrentSceneData();
+        if (sd != null)
+        {
+            sd.hasCheckpoint = true;
+            sd.checkpointX = position.x;
+            sd.checkpointY = position.y;
+            sd.checkpointZ = position.z;
+            SaveGame();
+        }
+    }
 
     public SceneData GetSceneData(int index)
     {

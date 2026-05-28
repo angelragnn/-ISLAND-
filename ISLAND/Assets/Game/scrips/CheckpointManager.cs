@@ -12,14 +12,28 @@ public class CheckpointManager : MonoBehaviour
     void Awake()
     {
         Instance = this;
+    }
 
+    void Start()
+    {
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player != null)
         {
             initialPosition = player.transform.position;
-            checkpointPosition = initialPosition;
-            hasCheckpoint = true;
-            Debug.Log($"[CPM] Posición inicial guardada: {initialPosition}");
+            
+            if (GameManager.Instance != null && GameManager.Instance.HasSavedCheckpoint())
+            {
+                checkpointPosition = GameManager.Instance.GetSavedCheckpoint();
+                hasCheckpoint = true;
+                player.transform.position = checkpointPosition;
+                Debug.Log($"[CPM] Checkpoint cargado desde JSON en Start: {checkpointPosition}");
+            }
+            else
+            {
+                checkpointPosition = initialPosition;
+                hasCheckpoint = false;
+                Debug.Log($"[CPM] Usando posicion inicial en Start: {initialPosition}");
+            }
         }
     }
 
@@ -28,6 +42,11 @@ public class CheckpointManager : MonoBehaviour
         checkpointPosition = position;
         hasCheckpoint = true;
         Debug.Log($"[CPM] Checkpoint guardado en: {position}");
+        
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.SaveCheckpoint(position);
+        }
     }
 
     public void ResetToInitial()
@@ -40,14 +59,14 @@ public class CheckpointManager : MonoBehaviour
     {
         if (!hasCheckpoint)
         {
-            Debug.LogWarning("[CPM] Sin checkpoint — usando posición inicial.");
+            Debug.LogWarning("[CPM] Sin checkpoint - usando posicion inicial.");
             checkpointPosition = initialPosition;
         }
 
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player == null)
         {
-            Debug.LogError("[CPM] No se encontró el Player.");
+            Debug.LogError("[CPM] No se encontro el Player.");
             return;
         }
 

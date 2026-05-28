@@ -1,9 +1,4 @@
-﻿using UnityEngine;
-
-
-
-
-
+using UnityEngine;
 
 public class Collectible : MonoBehaviour
 {
@@ -21,44 +16,49 @@ public class Collectible : MonoBehaviour
 
     private Vector3 startPos;
     private bool collected = false;
+    private string uniqueID;
 
     void Start()
     {
-
         if (!gameObject.CompareTag("Recolectable"))
             gameObject.tag = "Recolectable";
 
         startPos = transform.position;
+        uniqueID = $"{UnityEngine.SceneManagement.SceneManager.GetActiveScene().name}_{gameObject.name}_{startPos.x:F2}_{startPos.y:F2}_{startPos.z:F2}";
+
+        if (GameManager.Instance != null && GameManager.Instance.IsCollectibleCollected(uniqueID))
+        {
+            Destroy(gameObject);
+            return;
+        }
     }
 
     void Update()
     {
         if (collected) return;
 
-
         float newY = startPos.y + Mathf.Sin(Time.time * floatSpeed) * floatHeight;
         transform.position = new Vector3(startPos.x, newY, startPos.z);
         transform.Rotate(Vector3.up * rotateSpeed * Time.deltaTime);
     }
-
 
     public void Collect()
     {
         if (collected) return;
         collected = true;
 
-
         SpawnParticles();
 
-
         if (GameManager.Instance != null)
-            GameManager.Instance.OnCollectibleCollected(pointValue);
-
-
-        Destroy(gameObject, 0.1f);
+        {
+            GameManager.Instance.RecordCollectible(uniqueID, pointValue);
+        }
+        else
+        {
+            Destroy(gameObject, 0.1f);
+        }
     }
 
-    
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -70,17 +70,13 @@ public class Collectible : MonoBehaviour
         if (particlesPrefab != null)
         {
             ParticleSystem ps = Instantiate(particlesPrefab, transform.position, Quaternion.identity);
-
-           
             var main = ps.main;
             main.startColor = particleColor;
-
             ps.Play();
             Destroy(ps.gameObject, main.duration + main.startLifetime.constantMax);
         }
         else
         {
-           
             GameObject psObj = new GameObject("Particles_" + gameObject.name);
             psObj.transform.position = transform.position;
 

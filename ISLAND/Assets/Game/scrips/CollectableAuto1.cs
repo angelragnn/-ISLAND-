@@ -15,10 +15,19 @@ public class ColectableAuto : MonoBehaviour
     private Vector3 startPos;
     private bool collected = false;
     private Transform jugador;
+    private string uniqueID;
 
     void Start()
     {
         startPos = transform.position;
+        uniqueID = $"{UnityEngine.SceneManagement.SceneManager.GetActiveScene().name}_{gameObject.name}_{startPos.x:F2}_{startPos.y:F2}_{startPos.z:F2}";
+
+        if (GameManager.Instance != null && GameManager.Instance.IsCollectibleCollected(uniqueID))
+        {
+            Destroy(gameObject);
+            return;
+        }
+
         GameObject p = GameObject.FindGameObjectWithTag("Player");
         if (p != null) jugador = p.transform;
     }
@@ -43,7 +52,8 @@ public class ColectableAuto : MonoBehaviour
             Debug.Log($"[Colectable] Checkpoint guardado en: {spawnPos}");
         }
         SpawnParticles();
-        GameManager.Instance?.OnCollectibleCollected(pointValue);
+        if (GameManager.Instance != null)
+            GameManager.Instance.RecordCollectible(uniqueID, pointValue);
         UIManager.Instance?.AgregarGema(pointValue);
         Destroy(gameObject, 0.1f);
     }

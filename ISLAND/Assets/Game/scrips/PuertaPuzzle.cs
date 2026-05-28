@@ -37,9 +37,12 @@ public class PuertaPuzzle : MonoBehaviour
     private bool puzzleActivo = false;
     private bool puertaAbierta = false;
     private MovePlayer movePlayer;
+    private string uniqueID;
 
     void Start()
     {
+        uniqueID = $"{UnityEngine.SceneManagement.SceneManager.GetActiveScene().name}_{gameObject.name}";
+
         if (jugador == null)
         {
             GameObject p = GameObject.FindGameObjectWithTag("Player");
@@ -52,6 +55,15 @@ public class PuertaPuzzle : MonoBehaviour
         else
         {
             movePlayer = jugador.GetComponent<MovePlayer>();
+        }
+
+        if (GameManager.Instance != null && GameManager.Instance.IsDoorOpened(uniqueID))
+        {
+            puertaAbierta = true;
+            if (panelInteraccion != null) panelInteraccion.SetActive(false);
+            if (panelPuzzle != null) panelPuzzle.SetActive(false);
+            if (puertaPadre != null) puertaPadre.SetActive(false);
+            return;
         }
 
         panelInteraccion.SetActive(false);
@@ -163,6 +175,12 @@ public class PuertaPuzzle : MonoBehaviour
         puertaAbierta = true;
         textoFeedback.text = "Puerta abierta!";
         textoFeedback.color = Color.green;
+
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.RecordDoorOpened(uniqueID);
+        }
+
         yield return new WaitForSeconds(1f);
 
         panelPuzzle.SetActive(false);

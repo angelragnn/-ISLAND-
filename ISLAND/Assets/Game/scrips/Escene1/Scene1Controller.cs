@@ -1,8 +1,8 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public class Scene1Controller : MonoBehaviour
 {
-    [Header("Puzzle 1: Recolección (Llaves)")]
+    [Header("Puzzle 1: Recoleccion (Llaves)")]
     public int keysRequired = 2;
     private int keysCollected = 0;
     private bool doorOpened = false;
@@ -25,10 +25,46 @@ public class Scene1Controller : MonoBehaviour
         if (audioSource == null)
             audioSource = gameObject.AddComponent<AudioSource>();
 
+        if (GameManager.Instance != null)
+        {
+            SceneData sd = GameManager.Instance.GetCurrentSceneData();
+            if (sd != null)
+            {
+                string sceneName = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+
+                keysCollected = 0;
+                if (sd.collectedItems != null)
+                {
+                    foreach (string id in sd.collectedItems)
+                    {
+                        if (id.StartsWith(sceneName))
+                        {
+                            keysCollected++;
+                        }
+                    }
+                }
+
+                socketsActivated = 0;
+                if (sd.activatedSockets != null)
+                {
+                    foreach (string id in sd.activatedSockets)
+                    {
+                        if (id.StartsWith(sceneName))
+                        {
+                            socketsActivated++;
+                        }
+                    }
+                }
+
+                if (keysCollected >= keysRequired)
+                {
+                    doorOpened = true;
+                }
+            }
+        }
 
         ActualizarUILlaves();
     }
-
 
     public void OnKeyCollected()
     {
@@ -36,7 +72,6 @@ public class Scene1Controller : MonoBehaviour
 
         keysCollected++;
         Debug.Log($"[Scene1Controller] Llave recolectada: {keysCollected}/{keysRequired}");
-
 
         ActualizarUILlaves();
 
@@ -62,14 +97,13 @@ public class Scene1Controller : MonoBehaviour
         if (targetDoor != null)
         {
             targetDoor.ToggleDoor();
-            Debug.Log("[Scene1Controller] ¡Puerta abierta con éxito!");
+            Debug.Log("[Scene1Controller] Puerta abierta con exito!");
         }
         else
         {
             Debug.LogWarning("[Scene1Controller] No hay ninguna puerta (Target Door) asignada en el Inspector!");
         }
     }
-
 
     public void OnSocketActivated()
     {
@@ -84,7 +118,7 @@ public class Scene1Controller : MonoBehaviour
 
     private void CompleteBookPuzzle()
     {
-        Debug.Log("[Scene1Controller] ¡Puzzle de libros COMPLETADO!");
+        Debug.Log("[Scene1Controller] Puzzle de libros COMPLETADO!");
 
         if (puzzleCompleteSound != null && audioSource != null)
             audioSource.PlayOneShot(puzzleCompleteSound);
@@ -92,7 +126,7 @@ public class Scene1Controller : MonoBehaviour
         if (keyPrefab != null && keySpawnPoint != null)
         {
             Instantiate(keyPrefab, keySpawnPoint.position, keySpawnPoint.rotation);
-            Debug.Log($"[Scene1Controller] ¡Llave spawneada en {keySpawnPoint.position}!");
+            Debug.Log($"[Scene1Controller] Llave spawneada en {keySpawnPoint.position}!");
         }
         else
         {

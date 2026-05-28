@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -16,9 +16,11 @@ public class SocketReceiver : MonoBehaviour
     private PickUpSystem pickUp;
     private Scene1Controller scene1Controller;
     private AudioSource audioSource;
+    private string uniqueID;
 
     void Start()
     {
+        uniqueID = $"{UnityEngine.SceneManagement.SceneManager.GetActiveScene().name}_{gameObject.name}";
         pickUp = FindFirstObjectByType<PickUpSystem>();
         scene1Controller = FindFirstObjectByType<Scene1Controller>();
         
@@ -26,7 +28,29 @@ public class SocketReceiver : MonoBehaviour
         if (audioSource == null)
             audioSource = gameObject.AddComponent<AudioSource>();
 
-        SetAuraColor(new Color(0.3f, 0.3f, 1f));
+        if (GameManager.Instance != null && GameManager.Instance.IsSocketActivated(uniqueID))
+        {
+            activated = true;
+            SetAuraColor(new Color(1f, 0.8f, 0f));
+
+            // Colocar el libro de forma estática sobre el socket en la carga
+            GrabbableObject[] books = Object.FindObjectsByType<GrabbableObject>(FindObjectsSortMode.None);
+            foreach (GrabbableObject book in books)
+            {
+                if (book.objectID == acceptedID)
+                {
+                    book.rb.isKinematic = true;
+                    book.col.enabled = false;
+                    book.transform.SetParent(transform);
+                    book.transform.position = transform.position + Vector3.up * 0.5f;
+                    break;
+                }
+            }
+        }
+        else
+        {
+            SetAuraColor(new Color(0.3f, 0.3f, 1f));
+        }
     }
 
     void OnTriggerEnter(Collider other)
@@ -117,6 +141,11 @@ public class SocketReceiver : MonoBehaviour
         pickUp.ForceRelease();
         pickUp.SetInsideSocket(false);
 
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.RecordSocketActivated(uniqueID);
+        }
+
         if (soundCorrect != null)
             audioSource.PlayOneShot(soundCorrect);
 
@@ -139,7 +168,6 @@ public class SocketReceiver : MonoBehaviour
         obj.transform.SetParent(transform);
 
         SetAuraColor(new Color(1f, 0.8f, 0f));
-
 
         if (scene1Controller != null)
         {
