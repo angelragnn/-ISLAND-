@@ -20,6 +20,9 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Game/Scenes/5DugeonFuego.unity
     guid: f34c1b771b0b1aa42b9888ff34cebcab
+  - enabled: 1
+    path: Assets/Game/Scenes/victoria.unity
+    guid: 091c2fbd6a1c5c34793c8154b2b5a7cf
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0
