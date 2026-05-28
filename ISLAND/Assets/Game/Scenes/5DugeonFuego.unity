@@ -27609,7 +27609,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 363497fe4683cf046a44dfc0a85fe365, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ZonaCaida
-  puntoDeRespawn: {fileID: 0}
+  puntoDeRespawn: {fileID: 1535874912}
 --- !u!65 &1933511879
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -31470,15 +31470,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 889074931851040607, guid: fe255ee4b5b6d574e9df71cbbb9dd775, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 111.42
+      value: 68.1
       objectReference: {fileID: 0}
     - target: {fileID: 889074931851040607, guid: fe255ee4b5b6d574e9df71cbbb9dd775, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 17.67
+      value: 14.6
       objectReference: {fileID: 0}
     - target: {fileID: 889074931851040607, guid: fe255ee4b5b6d574e9df71cbbb9dd775, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -2.18
+      value: -165.1
       objectReference: {fileID: 0}
     - target: {fileID: 889074931851040607, guid: fe255ee4b5b6d574e9df71cbbb9dd775, type: 3}
       propertyPath: m_LocalRotation.w

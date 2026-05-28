@@ -229,12 +229,19 @@ public class GameManager : MonoBehaviour
     IEnumerator ReloadSceneDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
+
         currentLives = maxLives;
         PlayerPrefs.SetInt("VidasGuardadasGlobal", currentLives);
         PlayerPrefs.Save();
 
         SceneData sd = GetCurrentSceneData();
-        if (sd != null) { sd.livesRemaining = maxLives; sd.collectiblesCollected = 0; sd.score = 0; }
+        if (sd != null)
+        {
+            sd.livesRemaining = maxLives;
+            sd.collectiblesCollected = 0;
+            sd.score = 0;
+            sd.hasCheckpoint = false;
+        }
         SaveGame();
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }

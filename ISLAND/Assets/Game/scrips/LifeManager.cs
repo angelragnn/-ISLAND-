@@ -52,6 +52,7 @@ public class LifeManager : MonoBehaviour
         {
             AudioSource.PlayClipAtPoint(sonidoGameOver, Camera.main.transform.position, volumen);
             UIManager.Instance?.MostrarGameOver();
+            ResetVidas();
         }
         else
         {
