@@ -13,6 +13,12 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TextMeshProUGUI textoVidas;
     [SerializeField] private GameObject panelGameOver;
 
+    [Header("Contador de Llaves")]
+    [SerializeField] private TextMeshProUGUI textoLlaves;
+    [SerializeField] private int totalLlavesRequeridas = 2;
+
+    private int llavesActuales = 0;
+
     private void Awake()
     {
         if (Instance != null && Instance != this)
@@ -26,12 +32,29 @@ public class UIManager : MonoBehaviour
 
         if (panelGameOver != null)
             panelGameOver.SetActive(false);
+
+        // Inicializar texto desde Awake para que esté listo antes que Scene1Controller
+        ActualizarTextoLlaves();
     }
 
     private void Start()
     {
         if (LifeManager.Instance != null && textoVidas != null)
             ActualizarVidas(LifeManager.Instance.Vidas);
+    }
+
+    // Llamado directamente desde Scene1Controller
+    public void SetLlaves(int actuales, int total)
+    {
+        llavesActuales = actuales;
+        totalLlavesRequeridas = total;
+        ActualizarTextoLlaves();
+    }
+
+    private void ActualizarTextoLlaves()
+    {
+        if (textoLlaves != null)
+            textoLlaves.text = $"Llave {llavesActuales}/{totalLlavesRequeridas}";
     }
 
     public void Jugar()

@@ -1,63 +1,65 @@
 using UnityEngine;
+using System.Collections;
 
-// ============================================================
-//  CHECKPOINT MANAGER � Un solo objeto en la escena
-//  Los checkpoints individuales tienen el script "Checkpoint.cs"
-// ============================================================
 public class CheckpointManager : MonoBehaviour
 {
     public static CheckpointManager Instance { get; private set; }
 
-    public Transform playerTransform;
-    public Vector3 currentCheckpointPosition;
+    private Vector3 checkpointPosition;
+    private bool hasCheckpoint = false;
 
     void Awake()
     {
         Instance = this;
-        // Punto de inicio por defecto
-        if (playerTransform != null)
-            currentCheckpointPosition = playerTransform.position;
     }
 
     public void SetCheckpoint(Vector3 position)
     {
-        currentCheckpointPosition = position;
-        Debug.Log($"[Checkpoint] Nuevo checkpoint: {position}");
+        checkpointPosition = position;
+        hasCheckpoint = true;
+        Debug.Log($"[CPM] Checkpoint guardado en: {position}");
     }
 
-    public void RespawnPlayer()
+    public void Respawn()
     {
-        if (playerTransform != null)
+        if (!hasCheckpoint)
         {
-            // Desactivar fisicas momentaneamente para mover sin problemas
-            Rigidbody rb = playerTransform.GetComponent<Rigidbody>();
-            if (rb != null)
-            {
-                rb.linearVelocity = Vector3.zero;
-                rb.angularVelocity = Vector3.zero;
-            }
-            playerTransform.position = currentCheckpointPosition;
+            Debug.LogWarning("[CPM] No hay checkpoint guardado aun.");
+            return;
         }
+
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player == null)
+        {
+            Debug.LogError("[CPM] No se encontro el Player.");
+            return;
+        }
+
+        StartCoroutine(DoRespawn(player));
     }
-}
 
-// ============================================================
-//  CHECKPOINT � Poner en cada objeto checkpoint de la escena
-// ============================================================
-public class Checkpoint : MonoBehaviour
-{
-    private bool activated = false;
-
-    void OnTriggerEnter(Collider other)
+    IEnumerator DoRespawn(GameObject player)
     {
-        if (other.CompareTag("Player") && !activated)
-        {
-            activated = true;
-            CheckpointManager.Instance?.SetCheckpoint(transform.position);
+        Rigidbody rb = player.GetComponent<Rigidbody>();
+        MonoBehaviour move = player.GetComponent<MovePlayer>();
 
-            // Feedback visual � cambia color del checkpoint
-            Renderer r = GetComponent<Renderer>();
-            if (r != null) r.material.color = Color.green;
+        if (move != null) move.enabled = false;
+
+        if (rb != null)
+        {
+            rb.isKinematic = false;
+            rb.linearVelocity = Vector3.zero;
+            rb.angularVelocity = Vector3.zero;
+            rb.isKinematic = true;
         }
+
+        yield return null;
+        player.transform.position = checkpointPosition;
+        yield return null;
+
+        if (rb != null) rb.isKinematic = false;
+        if (move != null) move.enabled = true;
+
+        Debug.Log($"[CPM] Respawn en: {player.transform.position}");
     }
 }

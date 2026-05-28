@@ -20,11 +20,9 @@ public class LifeManager : MonoBehaviour
 
     void Start()
     {
-        // Cargar vidas desde JSON via GameManager
         if (GameManager.Instance != null)
         {
             SceneData sd = GameManager.Instance.GetCurrentSceneData();
-            // Si hay vidas guardadas en el JSON las usa, si no arranca con las maximas
             vidas = (sd != null && sd.livesRemaining > 0) ? sd.livesRemaining : vidasMaximas;
         }
         else
@@ -40,7 +38,6 @@ public class LifeManager : MonoBehaviour
         if (vidas <= 0) return;
         vidas--;
 
-        // Sincronizar con GameManager y JSON
         if (GameManager.Instance != null)
         {
             SceneData sd = GameManager.Instance.GetCurrentSceneData();
@@ -52,7 +49,8 @@ public class LifeManager : MonoBehaviour
             }
             GameManager.Instance.currentLives = vidas;
             GameManager.Instance.currentDeaths++;
-            GameManager.Instance.SaveGame(); // Persistir en JSON
+            GameManager.Instance.NotifyPlayerDied();
+            GameManager.Instance.SaveGame();
         }
 
         UIManager.Instance?.ActualizarVidas(vidas);
@@ -65,10 +63,18 @@ public class LifeManager : MonoBehaviour
         else
         {
             AudioSource.PlayClipAtPoint(sonidoDanio, Camera.main.transform.position, volumen);
+
+            CheckpointManager cp = CheckpointManager.Instance;
+            if (cp != null)
+                cp.Respawn();
+            else
+            {
+                cp = Object.FindFirstObjectByType<CheckpointManager>();
+                if (cp != null) cp.Respawn();
+            }
         }
     }
 
-    /// <summary>Restaurar vidas al completar escena o reiniciar</summary>
     public void ResetVidas()
     {
         vidas = vidasMaximas;
