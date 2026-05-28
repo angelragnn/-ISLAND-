@@ -16,25 +16,22 @@ public class UIManager : MonoBehaviour
     [Header("Contador de Llaves")]
     [SerializeField] private TextMeshProUGUI textoLlaves;
     [SerializeField] private int totalLlavesRequeridas = 2;
-
     private int llavesActuales = 0;
+
+    [Header("Contador de Gemas")]
+    [SerializeField] private TextMeshProUGUI textoGemas;
+    [SerializeField] private int totalGemasRequeridas = 10;
+    private int gemasActuales = 0;
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
+        if (Instance != null && Instance != this) { Destroy(gameObject); return; }
         Instance = this;
         Time.timeScale = 1f;
-
         if (panelGameOver != null)
             panelGameOver.SetActive(false);
-
-        // Inicializar texto desde Awake para que esté listo antes que Scene1Controller
         ActualizarTextoLlaves();
+        ActualizarTextoGemas();
     }
 
     private void Start()
@@ -43,7 +40,6 @@ public class UIManager : MonoBehaviour
             ActualizarVidas(LifeManager.Instance.Vidas);
     }
 
-    // Llamado directamente desde Scene1Controller
     public void SetLlaves(int actuales, int total)
     {
         llavesActuales = actuales;
@@ -57,10 +53,26 @@ public class UIManager : MonoBehaviour
             textoLlaves.text = $"Llave {llavesActuales}/{totalLlavesRequeridas}";
     }
 
-    public void Jugar()
+    public void AgregarGema(int puntos)
     {
-        SceneManager.LoadScene("2BOSQUE");
+        gemasActuales += puntos;
+        ActualizarTextoGemas();
     }
+
+    public void SetGemas(int actuales, int total)
+    {
+        gemasActuales = actuales;
+        totalGemasRequeridas = total;
+        ActualizarTextoGemas();
+    }
+
+    private void ActualizarTextoGemas()
+    {
+        if (textoGemas != null)
+            textoGemas.text = $"Gemas {gemasActuales}/{totalGemasRequeridas}";
+    }
+
+    public void Jugar() { SceneManager.LoadScene("2BOSQUE"); }
 
     public void Instrucciones()
     {
@@ -68,10 +80,7 @@ public class UIManager : MonoBehaviour
             panelInstrucciones.SetActive(true);
     }
 
-    public void Salir()
-    {
-        Application.Quit();
-    }
+    public void Salir() { Application.Quit(); }
 
     public void ActualizarVidas(int vidas)
     {
@@ -83,7 +92,6 @@ public class UIManager : MonoBehaviour
     {
         if (panelGameOver != null)
             panelGameOver.SetActive(true);
-
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
         Time.timeScale = 0f;
