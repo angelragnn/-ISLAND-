@@ -12271,7 +12271,7 @@ MonoBehaviour:
   sonidoDanio: {fileID: 8300000, guid: 4213ab14d2bc4e045a1670c2f167dd17, type: 3}
   sonidoGameOver: {fileID: 8300000, guid: 13501786fd17ca84d8b7dc6c4d772f56, type: 3}
   volumen: 0.4
-  vidasMaximas: 3
+  vidasMaximas: 5
 --- !u!4 &1706934322
 Transform:
   m_ObjectHideFlags: 0
